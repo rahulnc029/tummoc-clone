@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tummoc/main_page_components/containers_with_icons.dart';
 import 'package:tummoc/main_page_components/pass.dart';
-import 'package:tummoc/utils/custom_appbar.dart';
 
 import 'utils/custom_drawer.dart';
 
@@ -72,7 +71,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       fontFamily: 'Roboto',
                       letterSpacing: 1,
                       decoration: TextDecoration.none,
-                    )),
+                    )
+                ),
               ],
             ),
           ],
@@ -91,12 +91,58 @@ class _SecondScreenState extends State<SecondScreen> {
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   late double width;
   int selectedIndex = 0;
+  String displayText = "";
+  List<String> texts = ['Search destination here', 'Plan your trip'];
+  int textIndex = 0;
+  int charIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    startTextAnimation();
+  }
+  void startTextAnimation(){
+    Timer.periodic(Duration(milliseconds: 300), (timer) {
+      setState(() {
+        if(charIndex < texts[textIndex].length){
+          displayText += texts[textIndex][charIndex];
+          charIndex++;
+        }else{
+          // Animation completed, stop the timer
+          timer.cancel();
+          textIndex = (textIndex + 1) % texts.length;
+          charIndex = 0;
+          displayText = "";
+          startTextAnimation();
+        }
+      });
+    });
+  }
+
+  void navigateToPage(int index){
+    setState(() {
+      selectedIndex = index;
+    });
+    if(index == 0){
+      print("------- Home -------");
+    }else if(index == 1){
+      print('----- trip -----');
+    }else if(index == 2){
+      print('------ pass -------');
+      Navigator.pushReplacement(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => Passes(),
+          ),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       // appBar: customAppBar(),
-      drawer: customDrawer(),
+      drawer: CustomDrawer(),
       body: Column(
         children: [
           Stack(
@@ -200,8 +246,8 @@ class _SecondScreenState extends State<SecondScreen> {
                         child: SizedBox(
                           width: 200,
                           child: TextFormField(
-                            decoration: const InputDecoration(
-                                hintText: "Search destination here",
+                            decoration:  InputDecoration(
+                                hintText: displayText,
                                 hintStyle: TextStyle(
                                     color: Colors.grey,
                                     fontSize: 16,

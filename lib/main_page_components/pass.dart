@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:tummoc/main_page_components/active_pass.dart';
-import 'package:tummoc/utils/custom_tabbar.dart';
 import '../main.dart';
 import 'package:intl/intl.dart';
 
