@@ -95,14 +95,20 @@ class _SecondScreenState extends State<SecondScreen> {
   List<String> texts = ['Search destination here', 'Plan your trip'];
   int textIndex = 0;
   int charIndex = 0;
+  late Timer _timer;
 
   @override
   void initState() {
     super.initState();
     startTextAnimation();
   }
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
   void startTextAnimation(){
-    Timer.periodic(Duration(milliseconds: 300), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 300), (timer) {
       setState(() {
         if(charIndex < texts[textIndex].length){
           displayText += texts[textIndex][charIndex];
@@ -119,24 +125,6 @@ class _SecondScreenState extends State<SecondScreen> {
     });
   }
 
-  void navigateToPage(int index){
-    setState(() {
-      selectedIndex = index;
-    });
-    if(index == 0){
-      print("------- Home -------");
-    }else if(index == 1){
-      print('----- trip -----');
-    }else if(index == 2){
-      print('------ pass -------');
-      Navigator.pushReplacement(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => Passes(),
-          ),
-      );
-    }
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -317,24 +305,24 @@ class _SecondScreenState extends State<SecondScreen> {
           items: [
         BottomNavigationBarItem(
           icon: Icon(
-              Icons.home_outlined,
+              Icons.home_filled,
             color: selectedIndex == 0 ? Colors.black : Colors.grey,
           ),
           label: "Home",
         ),
         BottomNavigationBarItem(
           icon: Icon(
-              Icons.route,
+              Icons.account_balance_wallet,
             color: selectedIndex == 1 ? Colors.black : Colors.grey,
           ),
-          label: "Trip",
+          label: "Tummoc Money",
         ),
         BottomNavigationBarItem(
           icon: Icon(
               CupertinoIcons.tickets,
             color: selectedIndex == 2 ? Colors.black : Colors.grey,
           ),
-          label: "Pass",
+          label: "Bookings",
         ),
       ],
         currentIndex: selectedIndex,
@@ -347,7 +335,7 @@ class _SecondScreenState extends State<SecondScreen> {
             if(index == 1)
               print('Trip is Tapped');
             if(index == 2)
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Passes(),));
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => NestedTabBarScreen(),));
               print('Pass is Tapped');
         },
       ),
